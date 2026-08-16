@@ -184,13 +184,16 @@ const DASHBOARD_REFERENCE_LINKS = [
   { label: 'Tools', path: '/tools/' },
 ] as const;
 
+// Relative paths, not upstream's per-variant subdomains: this self-hosted instance
+// serves every variant from one hostname (world.sangai.today), and picks which one
+// via location.pathname (see src/config/variant.ts) rather than a subdomain prefix.
 export const VARIANT_SWITCHER_DASHBOARD_URLS = {
-  full: 'https://worldmonitor.app/dashboard',
-  tech: 'https://tech.worldmonitor.app/dashboard',
-  finance: 'https://finance.worldmonitor.app/dashboard',
-  commodity: 'https://commodity.worldmonitor.app/dashboard',
-  energy: 'https://energy.worldmonitor.app/dashboard',
-  happy: 'https://happy.worldmonitor.app/dashboard',
+  full: '/',
+  tech: '/tech',
+  finance: '/finance',
+  commodity: '/commodity',
+  energy: '/energy',
+  happy: '/happy',
 } as const;
 
 export function variantSwitcherHref(

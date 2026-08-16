@@ -45,6 +45,18 @@ export const SITE_VARIANT: string = (() => {
   if (h.startsWith('commodity.')) return 'commodity';
   if (h.startsWith('energy.')) return 'energy';
 
+  // Path-based variant selection — this self-hosted instance uses one hostname
+  // (world.sangai.today) for every variant rather than upstream's per-variant
+  // subdomains, so /tech, /finance, etc. are the equivalent of tech.worldmonitor.app.
+  // Checked ahead of the SPA's own routing since these are otherwise plain
+  // top-level paths with no other meaning.
+  const p = location.pathname;
+  if (p === '/tech' || p.startsWith('/tech/')) return 'tech';
+  if (p === '/finance' || p.startsWith('/finance/')) return 'finance';
+  if (p === '/happy' || p.startsWith('/happy/')) return 'happy';
+  if (p === '/commodity' || p.startsWith('/commodity/')) return 'commodity';
+  if (p === '/energy' || p.startsWith('/energy/')) return 'energy';
+
   if (h === 'localhost' || h === '127.0.0.1') {
     const stored = loadStoredVariant();
     if (isSiteVariant(stored)) return stored;
