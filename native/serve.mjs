@@ -72,9 +72,36 @@ const FOOTER = `
   </span>
 </div>`;
 
+// Hides purchase/upgrade-to-Pro/pricing CTAs and the GitHub repo links from the live UI.
+// Injected as CSS at serve time (never patched into dist/, same reasoning as FOOTER above)
+// rather than edited out of the upstream source: this instance runs no Clerk/Convex/Dodo
+// billing at all, so every one of these is either a dead link (nothing to upgrade to here)
+// or points at upstream's repo/pricing rather than this fork. Scoped to `#app` throughout —
+// our own AGPL attribution footer lives outside #app (a sibling in <body>) and must stay
+// visible; scoping this way means no selector here can ever hide it by accident.
+const HIDE_STYLE = `
+<style id="wm-hide-purchase-links">
+  /* Top "Pro is launched" promo banner. */
+  #app .pro-banner-slot,
+  /* Header GitHub icon link. */
+  #app a.github-link,
+  /* Footer/mobile-menu nav: Pricing + GitHub (plain <a>, no stable class — matched by href). */
+  #app nav a[href*="/pro#pricing"],
+  #app nav a[href="/pro"],
+  #app nav a[href*="github.com/koala73"],
+  #app .mobile-menu-footer-links a[href*="/pro"],
+  /* Settings dialog: "Upgrade to Pro/Business" CTAs (the surrounding plan-status text stays). */
+  #app .upgrade-pro-cta-link,
+  #app .upgrade-to-business-btn,
+  /* Locked-panel gate: just the CTA button, not the whole explanatory card. */
+  #app .panel-locked-cta
+  { display: none !important; }
+</style>`;
+
 function injectFooter(html) {
-  if (html.includes('</body>')) return html.replace('</body>', `${FOOTER}</body>`);
-  return html + FOOTER;
+  const withStyle = html.includes('</head>') ? html.replace('</head>', `${HIDE_STYLE}</head>`) : html + HIDE_STYLE;
+  if (withStyle.includes('</body>')) return withStyle.replace('</body>', `${FOOTER}</body>`);
+  return withStyle + FOOTER;
 }
 
 // serveStatic — same shape as sangai/site/server.js's own: path-traversal guard via
