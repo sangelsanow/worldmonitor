@@ -222,6 +222,7 @@
     "papaparse": "^5.5.3",
     "pmtiles": "^4.4.0",
     "preact": "^10.25.4",
+    "redis": "^4.7.1",
     "satellite.js": "^6.0.2",
     "supercluster": "^8.0.1",
     "telegram": "^2.26.22",
