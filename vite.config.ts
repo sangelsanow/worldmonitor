@@ -931,7 +931,13 @@ export default defineConfig(({ mode }) => {
       // Variant subdomain SEO pages only make sense on the web deployment,
       // which is always the 'full' build (variant selection is runtime by
       // hostname). Desktop and dedicated VITE_VARIANT builds skip it.
-      !isDesktopBuild && activeVariant === 'full' && variantDashboardHtmlPlugin(),
+      //
+      // Disabled on this self-hosted fork: we serve every variant from ONE
+      // hostname via location.pathname (see src/config/variant.ts) rather than
+      // upstream's per-variant subdomains, so dashboard-<variant>.html would be
+      // dead weight nobody routes to — and its rewrite anchors target upstream's
+      // subdomain URLs (VARIANT_META[variant].url), which we don't use either.
+      false && !isDesktopBuild && activeVariant === 'full' && variantDashboardHtmlPlugin(),
       webMcpDevSecurityHeadersPlugin(),
       polymarketPlugin(),
       rssProxyPlugin(),
